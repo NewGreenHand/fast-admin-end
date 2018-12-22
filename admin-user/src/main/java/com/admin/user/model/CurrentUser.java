@@ -15,18 +15,12 @@ import java.util.Optional;
  * @date 2018/2/28
  */
 public class CurrentUser {
-  private static final JwtUser JWT_USER;
-
-  static {
-    JWT_USER = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-  }
-
   /**
    * 获取当前用户方法
    * @return 当前用户
    */
   public static JwtUser currentUser() {
-    return JWT_USER;
+    return (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
   }
 
   /**
@@ -35,7 +29,7 @@ public class CurrentUser {
    * @return 用户名
    */
   public static Optional<String> currentUserName() {
-    return Optional.of(JWT_USER)
+    return Optional.of(currentUser())
       .map(JwtUser::getUsername);
   }
 
@@ -44,7 +38,7 @@ public class CurrentUser {
    * @return 用户ID
    */
   public static Long currentUserId() {
-    return Optional.of(JWT_USER)
+    return Optional.of(currentUser())
       .map(JwtUser::getId)
       .orElseThrow(UserNotInitException::new);
   }

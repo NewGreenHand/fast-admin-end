@@ -207,7 +207,6 @@ public class SysUser implements Serializable {
   @ManyToMany(
       cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
       fetch = FetchType.EAGER) // FetchType.LAZY：延迟加载 。FetchType.EAGER：急加载
-  // @JoinTable 描述了多对多关系的数据表关系。name 属性指定中间表名称，joinColumns 定义中间表与当前表的外键关系
   @JoinTable(
       name = "sys_user_role",
       joinColumns = {@JoinColumn(name = "uid")},
