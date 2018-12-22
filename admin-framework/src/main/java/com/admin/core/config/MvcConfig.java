@@ -130,7 +130,7 @@ public class MvcConfig implements WebMvcConfigurer {
         .timeZone(TimeZone.getTimeZone("GMT+8"))
         .simpleDateFormat("yyyy-MM-dd HH:mm:ss")
         .modulesToInstall(new ParameterNamesModule());
-//    converters.add(0, new MappingJackson2HttpMessageConverter(builder.build()));
+      converters.add(0, new MappingJackson2HttpMessageConverter(builder.build()));
 //    converters.add(1, new MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build()));
   }
 
