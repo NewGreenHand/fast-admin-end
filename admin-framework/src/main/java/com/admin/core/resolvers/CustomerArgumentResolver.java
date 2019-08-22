@@ -18,7 +18,7 @@ import java.io.IOException;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 自定义参数装填
+ * 自定义参数装填.
  *
  * @author fei
  * @date 2018/03/19
@@ -31,7 +31,7 @@ public class CustomerArgumentResolver implements HandlerMethodArgumentResolver {
   private ObjectMapper om = new ObjectMapper();
 
   /**
-   * 处理过滤规则
+   * 处理过滤规则.
    *
    * @param methodParameter 方法参数
    * @return true: 拦截， false: 放行
@@ -42,7 +42,7 @@ public class CustomerArgumentResolver implements HandlerMethodArgumentResolver {
   }
 
   /**
-   * 装载参数
+   * 装载参数.
    *
    * @param methodParameter 方法参数
    * @param modelAndViewContainer 返回视图容器
@@ -62,7 +62,7 @@ public class CustomerArgumentResolver implements HandlerMethodArgumentResolver {
     HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
     if (!request.getContentType().contains(CONTENT_TYPE)) {
       throw new AppException(
-          "Request content types 's%' not supported", request.getContentType());
+          "Request content types '" + request.getContentType() + "' not supported");
     }
 
     // 从 body 中获取参数

@@ -7,14 +7,12 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.annotation.Order;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -27,6 +25,7 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -41,7 +40,8 @@ public class MvcConfig implements WebMvcConfigurer {
 
   @Bean
   public MethodValidationPostProcessor methodValidationPostProcessor() {
-    MethodValidationPostProcessor methodValidationPostProcessor = new MethodValidationPostProcessor();
+    MethodValidationPostProcessor methodValidationPostProcessor =
+        new MethodValidationPostProcessor();
     methodValidationPostProcessor.setValidator(validator());
     return methodValidationPostProcessor;
   }
@@ -62,7 +62,7 @@ public class MvcConfig implements WebMvcConfigurer {
     return validator;
   }
 
-  private ResourceBundleMessageSource getMessageSource(){
+  private ResourceBundleMessageSource getMessageSource() {
     ResourceBundleMessageSource rbms = new ResourceBundleMessageSource();
     rbms.setDefaultEncoding(StandardCharsets.UTF_8.toString());
     rbms.setUseCodeAsDefaultMessage(false);
@@ -94,20 +94,9 @@ public class MvcConfig implements WebMvcConfigurer {
     return new CorsFilter(source);
   }
 
-
-//  @Override
-//  public void addCorsMappings(CorsRegistry registry) {
-//    registry
-//      .addMapping("/**")
-//      .allowedHeaders("*")
-//      .allowCredentials(true)
-//      .maxAge(3600L)
-//      .allowedOrigins("*")
-//      .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-//  }
-
   /**
-   * 参数转换规则
+   * 参数转换规则.
+   *
    * @param registry
    */
   @Override
@@ -117,36 +106,39 @@ public class MvcConfig implements WebMvcConfigurer {
   }
 
   /**
-   * 修改自定义消息转换器
+   * 修改自定义消息转换器.
    *
    * @param converters 消息转换器列表
    */
   @Override
   public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
     Jackson2ObjectMapperBuilder builder =
-      new Jackson2ObjectMapperBuilder()
-        .indentOutput(true)
-        .locale(Locale.CHINESE)
-        .timeZone(TimeZone.getTimeZone("GMT+8"))
-        .simpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        .modulesToInstall(new ParameterNamesModule());
-      converters.add(0, new MappingJackson2HttpMessageConverter(builder.build()));
-//    converters.add(1, new MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build()));
+        new Jackson2ObjectMapperBuilder()
+            .indentOutput(true)
+            .locale(Locale.CHINESE)
+            .dateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
+            .timeZone(TimeZone.getTimeZone("GMT+8"))
+            .modulesToInstall(new ParameterNamesModule());
+    converters.add(0, new MappingJackson2HttpMessageConverter(builder.build()));
+    //    converters.add(1, new
+    // MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build()));
   }
 
   /**
-   * 配置支持返回不同的内容类型
+   * 配置支持返回不同的内容类型.
+   *
    * @param configurer
    */
   @Override
   public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    configurer.favorPathExtension(false)
-      .favorParameter(true)
-      .parameterName("mediaType")
-      .defaultContentType(MediaType.APPLICATION_JSON)
-      .mediaType("xml", MediaType.APPLICATION_XML)
-      .mediaType("html", MediaType.TEXT_HTML)
-      .mediaType("json", MediaType.APPLICATION_JSON);
+    configurer
+        .favorPathExtension(false)
+        .favorParameter(true)
+        .parameterName("mediaType")
+        .defaultContentType(MediaType.APPLICATION_JSON)
+        .mediaType("xml", MediaType.APPLICATION_XML)
+        .mediaType("html", MediaType.TEXT_HTML)
+        .mediaType("json", MediaType.APPLICATION_JSON);
   }
 
   /**
@@ -163,9 +155,8 @@ public class MvcConfig implements WebMvcConfigurer {
     configurer.setUseSuffixPatternMatch(true).setUseTrailingSlashMatch(false);
   }
 
-
   /**
-   * 添加参数装载
+   * 添加参数装载.
    *
    * @param argumentResolvers
    */

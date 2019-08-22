@@ -1,6 +1,6 @@
 package com.admin.core.converter;
 
-import com.admin.core.model.BaseEnum;
+import com.admin.core.enums.BaseEnum;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 

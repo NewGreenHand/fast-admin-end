@@ -9,17 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * 接口参数转换器（String -> Date）
+ * 接口参数转换器（String -> Date）.
  *
  * @author fei
  * @date 2018/2/27
  */
 public class DateConverter implements Converter<String, Date> {
-  private static final SimpleDateFormat DATE_FORMAT;
-
-  static {
-    DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-  }
+  private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   @Override
   public Date convert(String s) {
@@ -34,9 +30,9 @@ public class DateConverter implements Converter<String, Date> {
     }
 
     try {
-      return DATE_FORMAT.parse(s);
+      return dateFormat.parse(s);
     } catch (ParseException e) {
-      throw new DateConverterException("[s%]时间格式有误, 合法格式 yyyy-MM-dd HH:mm:ss", s);
+      throw new DateConverterException("[" + s + "]时间格式有误, 合法格式 yyyy-MM-dd HH:mm:ss");
     }
   }
 }

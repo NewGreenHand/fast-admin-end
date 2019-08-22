@@ -1,6 +1,6 @@
 package com.admin.core.exception;
 
-import com.admin.core.model.BaseEnum;
+import com.admin.core.enums.BaseEnum;
 
 /**
  * 异常错误编码

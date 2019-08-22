@@ -17,15 +17,8 @@ public class UserNotInitException extends AppException {
     super(message);
   }
 
-  public UserNotInitException(String errorMessage, String... params) {
-    super(errorMessage, params);
-  }
-
   public UserNotInitException(int errorCode, String errorMessage) {
     super(errorCode, errorMessage);
   }
 
-  public UserNotInitException(int errorCode, String errorMessage, String... params) {
-    super(errorCode, errorMessage, params);
-  }
 }

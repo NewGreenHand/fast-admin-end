@@ -4,7 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.SimpleIdGenerator;
 import org.springframework.util.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author fei
@@ -22,11 +26,28 @@ public class UrlTest {
   }
 
   @Test
-  public void test2() {
-    String a = "AaBb";
-    String b = "aabb";
+  public void test3() {
+    SimpleIdGenerator idGenerator = new SimpleIdGenerator();
+    String str1 = idGenerator.generateId().toString();
+    log.info("枚举输出结果: {}", str1);
+    String str2 = idGenerator.generateId().toString();
+    log.info("枚举输出结果: {}", str2);
+    String str3 = idGenerator.generateId().toString();
+    log.info("枚举输出结果: {}", str3);
+  }
 
-    log.info("匹配结果: {}", null instanceof String);
+  public static enum Gender {
+    MALE,
+    FEMALE;
+
+    public static Gender value(String val){
+      for (Gender g : values()) {
+        if (g.name().equals(val)){
+          return g;
+        }
+      }
+      throw new RuntimeException();
+    }
   }
 }
 

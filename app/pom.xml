@@ -11,7 +11,7 @@
 
   <artifactId>app</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>app</name>
   <description>Demo project for Spring Boot</description>
@@ -23,11 +23,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.admin</groupId>
-      <artifactId>admin-wechar</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
     <dependency>
       <groupId>com.admin</groupId>
       <artifactId>admin-user</artifactId>
@@ -51,7 +46,7 @@
     </dependency>
     <dependency>
       <groupId>com.alibaba</groupId>
-      <artifactId>druid</artifactId>
+      <artifactId>druid-spring-boot-starter</artifactId>
     </dependency>
 
     <dependency>
@@ -59,16 +54,47 @@
       <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.querydsl</groupId>
+      <artifactId>querydsl-jpa</artifactId>
+      <version>${querydsl.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.querydsl</groupId>
+      <artifactId>querydsl-apt</artifactId>
+      <version>${querydsl.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
+    <finalName>admin</finalName>
     <plugins>
+      <!-- Docker maven plugin -->
       <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.4.13</version>
+        <configuration>
+          <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+          <dockerDirectory>${project.basedir}/docker</dockerDirectory>
+          <serverId>docker-aliyun</serverId>
+          <registryUrl>${docker.repository}</registryUrl>
+          <pushImage>true</pushImage>
+          <imageTags>
+            <imageTag>${project.version}</imageTag>
+          </imageTags>
+          <resources>
+            <resource>
+              <targetPath>/</targetPath>
+              <directory>${project.build.directory}</directory>
+              <include>${project.build.finalName}-exec.jar</include>
+            </resource>
+          </resources>
+        </configuration>
       </plugin>
     </plugins>
   </build>
-
 
 </project>

@@ -10,6 +10,11 @@ spring:
   # 项目环境配置
   profiles:
     active: @profiles.active@ # 这个变量的值取决于 maven 中的环境变量的值
+  main:
+    allow-bean-definition-overriding: true
+  aop:
+    auto: true
+    proxy-target-class: true
   # 发送邮件
   mail:
     host: smtp.qq.com
@@ -27,16 +32,3 @@ spring:
     cache-names: menus_cache,role_cache
     redis:
       time-to-live: 1800s
-# JWT
-jwt:
-  header: Authorization
-  secret: mySecret
-  expiration: 86400000
-  tokenHead: "Bearer "
-
-# 微信
-wechar:
-  appId: wx1d64330fd2b154b0
-  secret: 36b5b2e2c3e2ba13e2a30788f97c7220
-  token: xfwlxfwl
-  aesKey:

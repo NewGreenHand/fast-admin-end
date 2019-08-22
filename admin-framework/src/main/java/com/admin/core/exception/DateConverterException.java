@@ -12,8 +12,4 @@ public class DateConverterException extends AppException {
         super(errorMessage);
     }
 
-    public DateConverterException(String errorMessage, String... params) {
-        super(errorMessage, params);
-    }
-
 }

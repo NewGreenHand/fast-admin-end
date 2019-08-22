@@ -2,33 +2,31 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/fastAdmin?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/fastAdmin?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password:
-    #最大活跃数
-    maxActive: 20
-    #初始化数量
-    initialSize: 1
-    #最大连接等待超时时间
-    maxWait: 60000
-    #打开PSCache，并且指定每个连接PSCache的大小
-    poolPreparedStatements: true
-    maxPoolPreparedStatementPerConnectionSize: 20
-    #通过connectionProperties属性来打开mergeSql功能；慢SQL记录
-    #connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-    minIdle: 1
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: select 1 from dual
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    #配置监控统计拦截的filters，去掉后监控界面sql将无法统计,'wall'用于防火墙
-    filters: stat, wall, slf4j
+    password: mysql_root
+    druid:
+      maxActive: 10
+      initialSize: 1
+      minIdle: 1
+      maxWait: 60000
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      filters: stat, wall
+      validationQuery: select 'x'
+      poolPreparedStatements: true
+      minEvictableIdleTimeMillis: 300000
+      timeBetweenEvictionRunsMillis: 60000
+      maxPoolPreparedStatementPerConnectionSize: 20
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        hbm2ddl:
+          auto: update
 
   #配置redis数据库连接
   redis:
@@ -48,3 +46,17 @@ logging:
     org.fei.admin.app.dto: 'off'
   pattern:
     level:
+
+# JWT
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 86400000
+  tokenHead: "Bearer "
+
+# 微信公共号
+wechar:
+  appId: wx1d64330fd2b154b0
+  secret: 36b5b2e2c3e2ba13e2a30788f97c7220
+  token: xfwlxfwl
+  aesKey:

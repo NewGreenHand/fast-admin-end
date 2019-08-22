@@ -12,15 +12,7 @@ public class HttpResponseException extends AppException {
     super(errorMessage);
   }
 
-  public HttpResponseException(String errorMessage, String... params) {
-    super(errorMessage, params);
-  }
-
   public HttpResponseException(int errorCode, String errorMessage) {
     super(errorCode, errorMessage);
-  }
-
-  public HttpResponseException(int errorCode, String errorMessage, String... params) {
-    super(errorCode, errorMessage, params);
   }
 }

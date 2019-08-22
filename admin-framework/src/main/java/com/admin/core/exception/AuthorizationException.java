@@ -18,15 +18,7 @@ public class AuthorizationException extends AppException {
         super(errorMessage);
     }
 
-    public AuthorizationException(String errorMessage, String... params) {
-        super(errorMessage, params);
-    }
-
     public AuthorizationException(int errorCode, String errorMessage) {
         super(errorCode, errorMessage);
-    }
-
-    public AuthorizationException(int errorCode, String errorMessage, String... params) {
-        super(errorCode, errorMessage, params);
     }
 }

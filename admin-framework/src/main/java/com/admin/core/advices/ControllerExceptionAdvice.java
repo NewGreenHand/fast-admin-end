@@ -5,15 +5,19 @@ import com.admin.core.exception.AuthorizationException;
 import com.admin.core.exception.ErrorCodeEnum;
 import com.admin.core.exception.ParamNotValidException;
 import com.admin.core.exception.UserNotInitException;
-import com.admin.core.model.Response;
+import com.admin.core.repository.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Objects;
 
 /**
@@ -28,7 +32,28 @@ public class ControllerExceptionAdvice {
   private static final String DEFAULT_ERROR_MESSAGE = "系统遇到不可抗力奔溃了!!!";
 
   /**
-   * 异常基类，所有自定义异常的父类
+   * 获取异常堆栈信息.
+   *
+   * @param throwable 异常对象
+   * @return 堆栈信息
+   */
+  private String getStackTrace(Throwable throwable) {
+    // 只取前 20 行
+    int row = 20;
+    StringWriter sw = new StringWriter();
+    try (PrintWriter pw = new PrintWriter(sw, true)) {
+      throwable.printStackTrace(pw);
+      String[] str = sw.toString().split("\\n\\t");
+      StringBuilder result = new StringBuilder();
+      for (int i = 0; i < str.length && i < row; i++) {
+        result.append(str[i]).append("\n\t");
+      }
+      return result.toString();
+    }
+  }
+
+  /**
+   * 异常基类，所有自定义异常的父类.
    *
    * @param ex 异常对象
    * @return 400 状态码
@@ -36,16 +61,13 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler(value = AppException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public Response appException(AppException ex) {
-    log.error(ex.getMessage(), ex);
     return appExceptionToResult(ex);
   }
-
 
   @ExceptionHandler(value = RuntimeException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public Response runtimeExceptionHandler(RuntimeException ex) {
-    log.error(ex.getMessage(), ex);
-    return appExceptionToResult(new AppException(ex.getMessage()));
+    return appExceptionToResult(new AppException(ex.getMessage(), ex));
   }
 
   /**
@@ -56,7 +78,6 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler(AuthorizationException.class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public Response authException(AuthorizationException ex) {
-    log.error(ex.getMessage(), ex);
     ex.setErrorCode(ErrorCodeEnum.UN_AUTHORIZATION.value());
     return appExceptionToResult(ex);
   }
@@ -69,12 +90,10 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler(UserNotInitException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public Response usernotinit(UserNotInitException ex) {
-    log.error(ex.getMessage(), ex);
-
     ex.setErrorCode(ErrorCodeEnum.USER_ACCESS_NOT_INIT.value());
+
     return appExceptionToResult(ex);
   }
-
 
   /**
    * 非法请求异常
@@ -85,58 +104,46 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler(ParamNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Response paramNotValidExceptionHandler(ParamNotValidException ex) {
-    log.error(ex.getMessage(), ex);
-
     ex.setErrorCode(ErrorCodeEnum.INVALID_PARAMS.value());
     return appException(ex);
   }
 
   /**
-   * 请求参数不符合要求时抛出的异常(400 异常)
-   * 由 spring @Validated 验证所抛出的异常
-   * 验证范围，整个应用
+   * 请求参数不符合要求时抛出的异常(400 异常) 由 spring @Validated 验证所抛出的异常 验证范围，整个应用
+   *
    * @param ex 异常对象
    * @return 错误提示
    */
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(ConstraintViolationException.class)
   public Response constraintViolationExceptionHandler(ConstraintViolationException ex) {
-    log.error(ex.getMessage(), ex);
-
     return paramNotValidExceptionHandler(new ParamNotValidException(ex));
   }
 
   /**
-   * 请求参数不符合要求时抛出的异常(400 异常)
-   * 由 spring @Validated @Valid 验证所抛出的异常
-   * 验证范围，controller 的对象类型数据
-   * 好像更新版本后就由这个替换了
-   * {@link BindException}
+   * 请求参数不符合要求时抛出的异常(400 异常) 由 spring @Validated @Valid 验证所抛出的异常 验证范围，controller 的对象类型数据
+   * 好像更新版本后就由这个替换了 {@link BindException}
+   *
    * @param ex 异常对象
    * @return 错误提示
    */
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({MethodArgumentNotValidException.class})
   public Response bindExceptionHandler(MethodArgumentNotValidException ex) {
-    log.error(ex.getMessage(), ex);
-
     return paramNotValidExceptionHandler(new ParamNotValidException(ex));
   }
 
   /**
-   * 请求参数不符合要求时抛出的异常(400 异常)
-   * 由 spring @Validated @Valid 验证所抛出的异常
-   * 验证范围，controller 的对象类型数据
+   * 请求参数不符合要求时抛出的异常(400 异常) 由 spring @Validated @Valid 验证所抛出的异常 验证范围，controller 的对象类型数据
+   *
    * @param ex 异常对象
    * @return 错误提示
    */
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(BindException.class)
   public Response bindException(BindException ex) {
-    log.error(ex.getMessage(), ex);
     return paramNotValidExceptionHandler(new ParamNotValidException(ex));
   }
-
 
   /**
    * 内部服务器错误
@@ -147,15 +154,16 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public Response exception(Exception ex) {
-    log.error(ex.getMessage(), ex);
-    return appExceptionToResult(new AppException(DEFAULT_ERROR_MESSAGE));
+    return appExceptionToResult(new AppException(DEFAULT_ERROR_MESSAGE, ex));
   }
 
   private Response appExceptionToResult(AppException ex) {
+    log.error(ex.getThrowable().getMessage(), ex.getThrowable());
     return Response.builder()
-      .success(false)
-      .code(Objects.toString(ex.getErrorCode()))
-      .message(ex.getErrorMessage())
-      .build();
+        .success(false)
+        .code(Objects.toString(ex.getErrorCode()))
+        .message(ex.getErrorMessage())
+        .stack(this.getStackTrace(ex.getThrowable()))
+        .build();
   }
 }

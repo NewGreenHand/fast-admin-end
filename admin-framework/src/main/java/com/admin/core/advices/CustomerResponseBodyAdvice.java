@@ -1,6 +1,6 @@
 package com.admin.core.advices;
 
-import com.admin.core.model.Response;
+import com.admin.core.repository.Response;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

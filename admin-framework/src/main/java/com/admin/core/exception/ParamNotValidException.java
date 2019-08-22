@@ -21,19 +21,19 @@ public class ParamNotValidException extends AppException {
   private List<FieldError> fieldErrors;
 
   public ParamNotValidException(MethodArgumentNotValidException ex) {
-    super("");
+    super("", ex);
     this.fieldErrors = bindExceptionToFieldError(ex.getBindingResult());
     this.setErrorMessage(this.fieldErrors.toString());
   }
 
   public ParamNotValidException(BindException ex) {
-    super("");
+    super("", ex);
     this.fieldErrors = bindExceptionToFieldError(ex.getBindingResult());
     this.setErrorMessage(this.fieldErrors.toString());
   }
 
   public ParamNotValidException(ConstraintViolationException violationException) {
-    super("");
+    super("", violationException);
     this.fieldErrors =
         violationException
             .getConstraintViolations()

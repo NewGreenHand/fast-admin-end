@@ -1,0 +1,119 @@
+package com.admin.user.controller;
+
+import com.admin.core.basic.AbstractController;
+import com.admin.user.dto.RoleDto;
+import com.admin.user.entity.SysRoleEntity;
+import com.admin.user.service.SysRoleService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * 角色接口
+ *
+ * @author fei
+ * @date 2017/9/19
+ */
+@RestController
+@RequestMapping("roles")
+public class SysRoleController extends AbstractController<SysRoleEntity, Long> {
+
+  private static final ExampleMatcher EXAMPLE_MATCHER;
+
+  static {
+    EXAMPLE_MATCHER =
+        ExampleMatcher.matchingAll()
+            .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains())
+            .withMatcher("departmentCode", ExampleMatcher.GenericPropertyMatchers.contains())
+            .withIgnorePaths("permissionIds");
+  }
+
+  private final SysRoleService roleService;
+
+  @Autowired
+  public SysRoleController(SysRoleService roleService) {
+    super(roleService);
+    this.roleService = roleService;
+  }
+
+  /**
+   * 获取所有有效的角色集合
+   *
+   * @return 角色集合
+   */
+  @GetMapping("all_valid")
+  public List<SysRoleEntity> findAllValid() {
+    SysRoleEntity sysRole = new SysRoleEntity();
+
+    Example<SysRoleEntity> example = Example.of(sysRole, EXAMPLE_MATCHER);
+
+    return roleService.findAll(example);
+  }
+
+  /**
+   * 获取所有的角色信息
+   *
+   * @param roleName 角色名称
+   * @param pageable 分页参数
+   * @return 角色集合
+   */
+  @GetMapping(value = "index", params = {"page"})
+  public Page<SysRoleEntity> findAll(String roleName, @PageableDefault Pageable pageable) {
+    SysRoleEntity sysRole = new SysRoleEntity();
+    sysRole.setName(roleName);
+
+    return roleService.findAll(Example.of(sysRole, EXAMPLE_MATCHER), pageable);
+  }
+
+  /**
+   * 保存角色信息
+   *
+   * @param dto 角色表单
+   * @return 保存后的角色信息
+   */
+  @PostMapping
+  public SysRoleEntity save(@Valid @RequestBody RoleDto dto) {
+    SysRoleEntity sysRole = dto.convert(SysRoleEntity.class);
+    return roleService.save(sysRole);
+  }
+
+  /**
+   * 更新角色信息
+   *
+   * @param id 角色ID
+   * @param dto 角色表单
+   * @return 更新后的角色信息
+   */
+  @PutMapping("/{id}")
+  public SysRoleEntity update(@NotNull @PathVariable Long id, @Valid @RequestBody RoleDto dto) {
+    SysRoleEntity sysRole = roleService.findById(id);
+    BeanUtils.copyProperties(dto, sysRole);
+    return roleService.update(sysRole);
+  }
+
+  /**
+   * 更新角色权限
+   *
+   * @param id 角色ID
+   * @param ids 权限ID集合
+   * @return 更新后的角色信息
+   */
+  @PutMapping("/{id}/role_authorization")
+  public SysRoleEntity authorization(@PathVariable Long id, @RequestBody Set<Long> ids) {
+    SysRoleEntity sysRole = roleService.findById(id);
+    sysRole.setInterfaceIds(ids);
+
+    return roleService.save(sysRole);
+  }
+}
+
