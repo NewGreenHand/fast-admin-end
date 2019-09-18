@@ -10,14 +10,20 @@ import com.admin.core.enums.BaseEnum;
  */
 public enum LayoutsContainerEnum implements BaseEnum<String> {
   /** 空. */
-  NONE,
+  BLANK("layouts/BlankLayout"),
   /** 基本. */
-  BASIC,
+  ROUTE("layouts/RouteView"),
   /** 卡片. */
-  CAR;
+  PAGE_VIEW("layouts/PageView");
+
+  private String value;
+
+  LayoutsContainerEnum(String value) {
+    this.value = value;
+  }
 
   @Override
   public String value() {
-    return this.name();
+    return this.value;
   }
 }

@@ -35,7 +35,7 @@ public class SysMenuEntity extends AbstractEntity {
   /** 是否启用. */
   private Boolean enabled;
   /** 布局容器. */
-  private LayoutsContainerEnum container;
+  private String container;
   /** 是否需要隐藏导航(即面包屑组件). */
   private Boolean hideHeader;
   /** 上级菜单 id 链. */
@@ -136,13 +136,13 @@ public class SysMenuEntity extends AbstractEntity {
   }
 
   @Basic
-  @Enumerated(EnumType.STRING)
-  @Column(name = "container", length = 10)
-  public LayoutsContainerEnum getContainer() {
+//  @Enumerated(EnumType.STRING)
+  @Column(name = "container", length = 30)
+  public String getContainer() {
     return container;
   }
 
-  public void setContainer(LayoutsContainerEnum container) {
+  public void setContainer(String container) {
     this.container = container;
   }
 
