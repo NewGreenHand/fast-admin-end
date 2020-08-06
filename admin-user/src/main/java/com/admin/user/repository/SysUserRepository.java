@@ -2,6 +2,8 @@ package com.admin.user.repository;
 
 import com.admin.core.repository.BaseRepository;
 import com.admin.user.entity.SysUserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 用户表
@@ -31,4 +33,12 @@ public interface SysUserRepository extends BaseRepository<SysUserEntity, Long> {
    * @return true: 已存在, false: 不存在
    */
   boolean existsByUserName(String userName);
+
+  /**
+   * 根据ID集合获取用户集合
+   * @param pageable 分页参数
+   * @param ids ID集合
+   * @return 用户集合
+   */
+  Page<SysUserEntity> findAllById(Pageable pageable, Iterable<Long> ids);
 }

@@ -5,6 +5,7 @@ import com.admin.auth.config.security.JwtUser;
 import com.admin.auth.config.security.JwtUserFactory;
 import com.admin.auth.util.JwtTokenUtil;
 import com.admin.auth.config.security.*;
+import com.admin.auth.enums.RedisKeyPrefixEnums;
 import com.admin.core.exception.AppException;
 import com.admin.user.entity.SysUserEntity;
 import com.admin.auth.service.AuthService;
@@ -37,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Validated
 public class AuthServiceImpl implements AuthService {
-  private static final String CACHE_PREFIX_TOKEN = "token_";
   private final AuthenticationManager authenticationManager;
   private final JwtUserDetailsServiceImpl jwtUserDetailsService;
   private final JwtTokenUtil jwtTokenUtil;
@@ -165,6 +165,6 @@ public class AuthServiceImpl implements AuthService {
   }
 
   private String tokenCacheKey(String userId) {
-    return CACHE_PREFIX_TOKEN + userId;
+    return RedisKeyPrefixEnums.CACHE_TOKEN.toString() + userId;
   }
 }

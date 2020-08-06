@@ -1,6 +1,7 @@
 package com.admin.user.dto;
 
 import com.admin.core.basic.DtoConvert;
+import com.admin.user.entity.SysRoleEntity;
 import lombok.Data;
 
 /**
@@ -9,7 +10,7 @@ import lombok.Data;
  * @date 2017/10/17
  */
 @Data
-public class RoleDto implements DtoConvert {
+public class RoleDto implements DtoConvert<SysRoleEntity> {
   private String name;
   private String description;
   private Boolean enabled;

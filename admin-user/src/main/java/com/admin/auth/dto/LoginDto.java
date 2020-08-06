@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class LoginDto {
   /** 用户名 */
-  @NotBlank private String userName;
+  @NotBlank private String username;
   /** 密码 */
   @NotBlank private String password;
 }

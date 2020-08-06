@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,7 +26,9 @@ public class SysRoleEntity extends AbstractEntity implements Serializable {
   /** 菜单ID集合. */
   private Set<Long> menuIds;
   /** 权限 ID 集合 */
-  private Set<Long> interfaceIds;
+  private Set<Long> apis;
+  /** 角色权限集合 */
+  private Set<SysMenuEntity> permissions;
 
   @Basic
   @Column(name = "name")
@@ -73,17 +74,29 @@ public class SysRoleEntity extends AbstractEntity implements Serializable {
     this.menuIds = menuIds;
   }
 
-  @JsonIgnore
   @ElementCollection
   @CollectionTable(
       name = "sys_role_interface",
       joinColumns = {@JoinColumn(name = "rid")})
   @Column(name = "pid")
-  public Set<Long> getInterfaceIds() {
-    return interfaceIds;
+  public Set<Long> getApis() {
+    return apis;
   }
 
-  public void setInterfaceIds(Set<Long> interfaceIds) {
-    this.interfaceIds = interfaceIds;
+  public void setApis(Set<Long> apis) {
+    this.apis = apis;
+  }
+
+  @ManyToMany
+  @JoinTable(
+      name = "sys_role_menu",
+      joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
+      inverseJoinColumns = {@JoinColumn(name = "menu_id", referencedColumnName = "id")})
+  public Set<SysMenuEntity> getPermissions() {
+    return permissions;
+  }
+
+  public void setPermissions(Set<SysMenuEntity> permissions) {
+    this.permissions = permissions;
   }
 }

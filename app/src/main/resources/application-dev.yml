@@ -47,13 +47,6 @@ logging:
   pattern:
     level:
 
-# JWT
-jwt:
-  header: Authorization
-  secret: mySecret
-  expiration: 86400000
-  tokenHead: "Bearer "
-
 # 微信公共号
 wechar:
   appId: wx1d64330fd2b154b0

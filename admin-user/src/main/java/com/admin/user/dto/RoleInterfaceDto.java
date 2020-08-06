@@ -14,9 +14,9 @@ import java.util.List;
  * @date 2018/10/14
  */
 @Data
-public class RoleInterfaceDto implements DtoConvert {
+public class RoleInterfaceDto {
   /** 角色ID. */
   @NotNull private Long roleId;
   /** 接口权限ID. */
-  @NotEmpty private List<Long> interfaceId;
+  @NotEmpty private List<Long> apis;
 }

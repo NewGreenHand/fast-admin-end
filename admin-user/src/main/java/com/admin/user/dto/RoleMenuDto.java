@@ -14,7 +14,7 @@ import java.util.List;
  * @since 2019-02-03 10:38
  */
 @Data
-public class RoleMenuDto implements DtoConvert {
+public class RoleMenuDto {
   /** 角色ID. */
   @NotNull private Long roleId;
   /** 菜单ID集合. */

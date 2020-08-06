@@ -68,6 +68,7 @@ public class SysMenuServiceImpl extends AbstractServiceImpl<SysMenuEntity, Long>
         list.add(criteriaBuilder.equal(root.get("menuName"), menuName));
       }
 
+      list.add(criteriaBuilder.equal(root.get("enabled"), true));
       list.add(criteriaBuilder.isNotNull(root.get("parentId")));
 
       return criteriaQuery.where(list.toArray(new Predicate[0])).getRestriction();

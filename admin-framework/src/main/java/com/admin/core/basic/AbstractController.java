@@ -3,6 +3,7 @@ package com.admin.core.basic;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,15 @@ public abstract class AbstractController<T, ID extends Serializable> {
   public T findOne(@NotNull @PathVariable ID id) {
     return service.findById(id);
   }
+
+  /**
+   * 获取查询构造器
+   * @return 查询构造器
+   */
+  public static ExampleMatcher getMatcher() {
+    return ExampleMatcher.matchingAll().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+  }
+
 
   protected <O> String toJSONString(O o) {
     try {

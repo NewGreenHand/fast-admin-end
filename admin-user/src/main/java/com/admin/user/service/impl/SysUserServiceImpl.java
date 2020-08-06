@@ -6,6 +6,8 @@ import com.admin.user.repository.SysUserRepository;
 import com.admin.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,5 +68,10 @@ public class SysUserServiceImpl extends AbstractServiceImpl<SysUserEntity, Long>
   @Override
   public SysUserEntity findByOpenId(String openId) {
     return userRepository.findByOpenId(openId);
+  }
+
+  @Override
+  public Page<SysUserEntity> findAllById(Pageable pageable, Iterable<Long> ids) {
+    return userRepository.findAllById(pageable, ids);
   }
 }

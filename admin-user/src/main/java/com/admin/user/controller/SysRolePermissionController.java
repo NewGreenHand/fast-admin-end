@@ -47,7 +47,7 @@ public class SysRolePermissionController {
   public String rolePermission(@RequestBody @Valid RolePermissionDto dto) {
 
     sysRolePermissionsService.saveRolePermission(
-        dto.getRoleId(), dto.getMenuIds(), dto.getInterfaceIds());
+        dto.getRoleId(), dto.getMenuIds(), dto.getApis());
 
     return "授权成功";
   }
@@ -71,7 +71,7 @@ public class SysRolePermissionController {
    */
   @PostMapping("role_interface")
   public List<SysRoleInterfaceEntity> saveRoleInterface(@Valid @RequestBody RoleInterfaceDto dto) {
-    return sysRolePermissionsService.saveRoleInterface(dto.getRoleId(), dto.getInterfaceId());
+    return sysRolePermissionsService.saveRoleInterface(dto.getRoleId(), dto.getApis());
   }
 
   /**

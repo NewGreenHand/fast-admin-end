@@ -2,6 +2,8 @@ package com.admin.user.service;
 
 import com.admin.core.basic.InterfaceService;
 import com.admin.user.entity.SysUserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 系统用户业务
@@ -32,4 +34,12 @@ public interface SysUserService extends InterfaceService<SysUserEntity, Long> {
    * @return 用户信息
    */
   SysUserEntity findByOpenId(String openId);
+
+  /**
+   * 根据ID集合获取用户集合
+   * @param pageable 分页参数
+   * @param ids ID集合
+   * @return 用户集合
+   */
+  Page<SysUserEntity> findAllById(Pageable pageable, Iterable<Long> ids);
 }

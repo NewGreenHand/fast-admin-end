@@ -4,13 +4,16 @@ import com.admin.core.exception.UserNotInitException;
 import com.admin.auth.dto.LoginDto;
 import com.admin.auth.service.AuthService;
 import com.admin.core.log.WebLog;
+import com.admin.user.entity.SysUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import sun.security.provider.MD5;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * 授权接口
@@ -40,7 +43,7 @@ public class AuthController {
   @PostMapping("login")
   public String createAuthenticationToken(
     @RequestBody LoginDto dto) throws AuthenticationException {
-    return authService.login(dto.getUserName(), dto.getPassword());
+    return authService.login(dto.getUsername(), dto.getPassword());
   }
 
   /**
@@ -63,7 +66,7 @@ public class AuthController {
    */
   @PutMapping("wx_bind")
   public String wxBind(@RequestBody LoginDto dto, @NotBlank String openId) throws AuthenticationException {
-    return authService.bind(dto.getUserName(), dto.getPassword(), openId);
+    return authService.bind(dto.getUsername(), dto.getPassword(), openId);
   }
 
   /**
@@ -90,5 +93,6 @@ public class AuthController {
 
     return authService.refresh(token);
   }
+
 }
 

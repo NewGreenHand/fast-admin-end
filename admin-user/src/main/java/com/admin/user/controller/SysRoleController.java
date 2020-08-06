@@ -61,18 +61,31 @@ public class SysRoleController extends AbstractController<SysRoleEntity, Long> {
   }
 
   /**
-   * 获取所有的角色信息
+   * 获取所有的角色信息 (分页)
    *
    * @param roleName 角色名称
    * @param pageable 分页参数
    * @return 角色集合
    */
   @GetMapping(value = "index", params = {"page"})
-  public Page<SysRoleEntity> findAll(String roleName, @PageableDefault Pageable pageable) {
+  public Page<SysRoleEntity> indexPage(String roleName, @PageableDefault Pageable pageable) {
     SysRoleEntity sysRole = new SysRoleEntity();
     sysRole.setName(roleName);
 
     return roleService.findAll(Example.of(sysRole, EXAMPLE_MATCHER), pageable);
+  }
+
+  /**
+   * 获取所有的角色信息(不分页)
+   * @param roleName 角色名称
+   * @return 角色集合
+   */
+  @GetMapping(value = "index")
+  public List<SysRoleEntity> index(String roleName) {
+    SysRoleEntity sysRole = new SysRoleEntity();
+    sysRole.setName(roleName);
+
+    return roleService.findAll(Example.of(sysRole, EXAMPLE_MATCHER));
   }
 
   /**
@@ -111,7 +124,7 @@ public class SysRoleController extends AbstractController<SysRoleEntity, Long> {
   @PutMapping("/{id}/role_authorization")
   public SysRoleEntity authorization(@PathVariable Long id, @RequestBody Set<Long> ids) {
     SysRoleEntity sysRole = roleService.findById(id);
-    sysRole.setInterfaceIds(ids);
+    sysRole.setApis(ids);
 
     return roleService.save(sysRole);
   }

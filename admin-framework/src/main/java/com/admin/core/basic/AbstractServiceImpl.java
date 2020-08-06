@@ -89,6 +89,11 @@ public abstract class AbstractServiceImpl<T, ID extends Serializable> implements
   }
 
   @Override
+  public List<T> findAllById(Iterable<ID> ids) {
+    return repository.findAllById(ids);
+  }
+
+  @Override
   public List<T> findAll() {
     return repository.findAll();
   }

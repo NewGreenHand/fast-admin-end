@@ -2,7 +2,9 @@ package com.admin.user.controller;
 
 import com.admin.auth.model.CurrentUser;
 import com.admin.auth.config.security.JwtUser;
+import com.admin.core.annotations.JsonParam;
 import com.admin.core.basic.AbstractController;
+import com.admin.core.exception.AppException;
 import com.admin.user.dto.RegisterUserDto;
 import com.admin.user.entity.SysUserEntity;
 import com.admin.user.service.SysUserService;
@@ -13,6 +15,8 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +24,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户接口层
@@ -70,10 +75,24 @@ public class SysUserController extends AbstractController<SysUserEntity, Long> {
    * @param dto 表单数据
    * @return 更新后的用户对象
    */
-  @PutMapping("/{id}")
+  @PutMapping("{id}")
   public SysUserEntity update(@NotNull @PathVariable Long id, @RequestBody RegisterUserDto dto) {
     SysUserEntity sysUser = userService.findById(id);
     BeanUtils.copyProperties(dto, sysUser);
+
+    return userService.update(sysUser);
+  }
+
+  /**
+   * 更新用户信息 (用户自己修改)
+   * @param dto 表单数据
+   * @return 更新后的用户对象
+   */
+  @PutMapping("me")
+  public SysUserEntity updateByMe(@RequestBody RegisterUserDto dto) {
+    Long id = CurrentUser.currentUserId();
+    SysUserEntity sysUser = userService.findById(id);
+    BeanUtils.copyProperties(dto, sysUser, "enabled");
 
     return userService.update(sysUser);
   }
@@ -84,22 +103,20 @@ public class SysUserController extends AbstractController<SysUserEntity, Long> {
    * @param newPassword 新密码
    * @return 当前用户对象
    */
-  @PutMapping("/modify")
+  @PutMapping("modify")
   public SysUserEntity modify(
-    @NotEmpty String oldPassword,
-    @NotEmpty @Size(min = 6, max = 18)
+    @JsonParam @NotEmpty String oldPassword,
+    @JsonParam @NotEmpty @Size(min = 6, max = 18)
       String newPassword) {
     Long id = CurrentUser.currentUserId();
     SysUserEntity sysUser = userService.findById(id);
 
     // 验证旧密码
-    // TODO 加密方式以修改，此方法不可用
-//    oldPassword = PwdUtils.pwd(oldPassword);
-//    if (!Objects.equals(oldPassword, sysUser.getPassword())) {
-//      throw new AppException("原密码不正确");
-//    }
-//
-//    sysUser.setPassword(PwdUtils.pwd(newPassword));
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
+    if (!encoder.matches(oldPassword, sysUser.getPassword())) {
+      throw new AppException("原密码不正确");
+    }
+    sysUser.setPassword(encoder.encode(newPassword));
     return userService.update(sysUser);
   }
 
@@ -109,7 +126,7 @@ public class SysUserController extends AbstractController<SysUserEntity, Long> {
    * @param name 用户名
    * @return true:不存在，false 存在
    */
-  @GetMapping("/checkUserName")
+  @GetMapping("checkUserName")
   public boolean checkUserName(@NotEmpty(message = "用户名不能为空") String name) {
     return userService.checkUserName(name);
   }
@@ -119,7 +136,7 @@ public class SysUserController extends AbstractController<SysUserEntity, Long> {
    *
    * @return 用户信息
    */
-  @GetMapping("/user_info")
+  @GetMapping("user_info")
   public SysUserEntity findByToken() {
     JwtUser jwtUser = CurrentUser.currentUser();
 
@@ -152,4 +169,16 @@ public class SysUserController extends AbstractController<SysUserEntity, Long> {
     return userService.findAll(Example.of(sysUser, EXAMPLE_MATCHER), pageable);
   }
 
+  /**
+   * 获取所有的用户信息
+   * @param userName 用户名
+   * @return 用户集合
+   */
+  @GetMapping(value = "index")
+  public List<SysUserEntity> index(String userName) {
+    SysUserEntity sysUser = new SysUserEntity();
+    sysUser.setUserName(userName);
+
+    return userService.findAll(Example.of(sysUser, EXAMPLE_MATCHER));
+  }
 }

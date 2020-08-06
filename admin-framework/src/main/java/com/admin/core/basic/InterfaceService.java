@@ -73,6 +73,13 @@ public interface InterfaceService<T, ID extends Serializable> {
   T findById(@NotNull ID id);
 
   /**
+   * 根据 ID 集合获取 实体集合
+   * @param ids ID 集合
+   * @return 实体集合
+   */
+  List<T> findAllById(Iterable<ID> ids);
+
+  /**
    * 获取所有的实体对象
    *
    * @return 实体对象

@@ -79,6 +79,7 @@ public class ControllerExceptionAdvice {
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public Response authException(AuthorizationException ex) {
     ex.setErrorCode(ErrorCodeEnum.UN_AUTHORIZATION.value());
+    ex.setErrorMessage(ErrorCodeEnum.UN_AUTHORIZATION.note());
     return appExceptionToResult(ex);
   }
 
@@ -91,7 +92,7 @@ public class ControllerExceptionAdvice {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public Response usernotinit(UserNotInitException ex) {
     ex.setErrorCode(ErrorCodeEnum.USER_ACCESS_NOT_INIT.value());
-
+    ex.setErrorMessage(ErrorCodeEnum.USER_ACCESS_NOT_INIT.note());
     return appExceptionToResult(ex);
   }
 

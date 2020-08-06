@@ -126,7 +126,8 @@ public class SysRolePermissionServiceImpl implements SysRolePermissionService {
       menus.addAll(this.roleMenu(role.getId()));
     }
 
-    return sysMenuService.findMenuTree(menus);
+    return menus;
+//    return sysMenuService.findMenuTree(menus);
   }
 
   @Override

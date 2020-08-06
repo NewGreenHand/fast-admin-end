@@ -2,6 +2,7 @@ package com.admin.user.dto;
 
 import com.admin.core.basic.DtoConvert;
 import com.admin.core.enums.EnabledEnum;
+import com.admin.user.entity.SysUserEntity;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -15,7 +16,7 @@ import javax.validation.constraints.Pattern;
  * @date 2017/9/30
  */
 @Data
-public class RegisterUserDto implements DtoConvert {
+public class RegisterUserDto implements DtoConvert<SysUserEntity> {
 
   /** 用户名. */
   @NotBlank(message = "用户名不能为空")
@@ -26,6 +27,8 @@ public class RegisterUserDto implements DtoConvert {
   private String iphone;
   /** email. */
   private String email;
+  /** 头像. */
+  private String avatar;
   /** 用户状态. */
   @NotNull private Boolean enabled;
 }

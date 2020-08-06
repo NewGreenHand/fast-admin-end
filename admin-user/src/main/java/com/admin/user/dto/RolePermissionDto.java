@@ -14,11 +14,11 @@ import java.util.List;
  * @since 2019-02-07 22:04
  */
 @Data
-public class RolePermissionDto implements DtoConvert {
+public class RolePermissionDto {
   /** 角色ID. */
   @NotNull private Long roleId;
   /** 菜单ID集合. */
   @NotEmpty private List<Long> menuIds;
   /** 接口权限ID. */
-  @NotEmpty private List<Long> interfaceIds;
+  @NotEmpty private List<Long> apis;
 }

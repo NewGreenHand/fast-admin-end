@@ -2,7 +2,6 @@ package com.admin.user.controller;
 
 import com.admin.core.basic.AbstractController;
 import com.admin.user.dto.ApiDto;
-import com.admin.user.dto.ApiEditDto;
 import com.admin.user.entity.SysInterfaceEntity;
 import com.admin.user.service.SysInterfaceService;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +66,9 @@ public class SysInterfaceController extends AbstractController<SysInterfaceEntit
    */
   @PutMapping("{id}")
   public SysInterfaceEntity updateApi(
-      @NotNull @PathVariable Long id, @Valid @RequestBody ApiEditDto dto) {
+      @NotNull @PathVariable Long id, @Valid @RequestBody ApiDto dto) {
     SysInterfaceEntity sysPermission = sysInterfaceService.findById(id);
-    BeanUtils.copyProperties(dto, sysPermission);
+    BeanUtils.copyProperties(dto, sysPermission, "menuId");
 
     return sysInterfaceService.update(sysPermission);
   }

@@ -32,3 +32,10 @@ spring:
     cache-names: menus_cache,role_cache
     redis:
       time-to-live: 1800s
+
+# JWT
+jwt:
+  header: "Access-Token"
+  secret: mySecret
+  expiration: 86400000
+  tokenHead: "Bearer "

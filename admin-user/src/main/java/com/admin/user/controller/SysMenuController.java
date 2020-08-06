@@ -47,7 +47,7 @@ public class SysMenuController extends AbstractController<SysMenuEntity, Long> {
   }
 
   /**
-   * 获取子菜单集合
+   * 获取有效子菜单集合
    * @param name 菜单名称
    * @param pageable 分页参数
    * @return 子菜单集合(分页)

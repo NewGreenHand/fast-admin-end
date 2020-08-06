@@ -26,6 +26,8 @@ public class SysInterfaceEntity extends AbstractEntity implements Serializable {
   private String requestMethod;
   /** 菜单ID. */
   private Long menuId;
+  /** 权限标示(用来控制界面的按钮显示) */
+  private String keyword;
 
   @Basic
   @Column(name = "name")
@@ -77,17 +79,33 @@ public class SysInterfaceEntity extends AbstractEntity implements Serializable {
     this.menuId = menuId;
   }
 
+  @Basic
+  @Column(name = "keyword")
+  public String getKeyword() {
+    return keyword;
+  }
+
+  public void setKeyword(String keyword) {
+    this.keyword = keyword;
+  }
+
   @Override
   public boolean equals(Object o) {
-    if (this == o) { return true; }
-    if (o == null || getClass() != o.getClass()) {  return false; }
-    if (!super.equals(o)) { return false; }
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
     SysInterfaceEntity that = (SysInterfaceEntity) o;
-    return Objects.equals(name, that.name) &&
-      Objects.equals(path, that.path) &&
-      Objects.equals(enabled, that.enabled) &&
-      Objects.equals(requestMethod, that.requestMethod) &&
-      Objects.equals(menuId, that.menuId);
+    return Objects.equals(name, that.name)
+        && Objects.equals(path, that.path)
+        && Objects.equals(enabled, that.enabled)
+        && Objects.equals(requestMethod, that.requestMethod)
+        && Objects.equals(menuId, that.menuId);
   }
 
   @Override
@@ -97,12 +115,20 @@ public class SysInterfaceEntity extends AbstractEntity implements Serializable {
 
   @Override
   public String toString() {
-    return "SysInterface{" +
-      "name='" + name + '\'' +
-      ", path='" + path + '\'' +
-      ", enabled=" + enabled +
-      ", requestMethod='" + requestMethod + '\'' +
-      ", menuId=" + menuId +
-      '}';
+    return "SysInterface{"
+        + "name='"
+        + name
+        + '\''
+        + ", path='"
+        + path
+        + '\''
+        + ", enabled="
+        + enabled
+        + ", requestMethod='"
+        + requestMethod
+        + '\''
+        + ", menuId="
+        + menuId
+        + '}';
   }
 }

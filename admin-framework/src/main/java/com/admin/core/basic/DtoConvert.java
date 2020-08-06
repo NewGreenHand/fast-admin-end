@@ -8,15 +8,14 @@ import org.springframework.beans.BeanUtils;
  * @author fei
  * @date 2017/10/11
  */
-public interface DtoConvert {
+public interface DtoConvert<T> {
   /**
    * dto -> entity
    *
    * @param tClass entity class
-   * @param <T> entity
    * @return entity
    */
-  default  <T> T convert(Class<T> tClass) {
+  default T convert(Class<T> tClass) {
     T t = BeanUtils.instantiateClass(tClass);
     this.pathProperties(t);
     return t;
@@ -26,10 +25,9 @@ public interface DtoConvert {
    * dto -> entity
    *
    * @param tClass entity class
-   * @param <T> entity
    * @return entity
    */
-  default  <T> T convert(Class<T> tClass, String... ignoreProperties) {
+  default T convert(Class<T> tClass, String... ignoreProperties) {
     T t = BeanUtils.instantiateClass(tClass);
     this.pathProperties(t, ignoreProperties);
 
@@ -40,25 +38,32 @@ public interface DtoConvert {
    * dto -> entity
    *
    * @param t entity
-   * @param <T> entity
    */
-  default  <T> T pathProperties(T t) {
+  default T pathProperties(T t) {
     BeanUtils.copyProperties(this, t);
 
-    return t;
+    return this.convertProperties(t);
   }
 
   /**
    * dto -> entity
    *
    * @param t entity
-   * @param <T> entity
    * @param ignoreProperties 要忽略的属性
    * @return 源对象
    */
-  default  <T> T pathProperties(T t, String... ignoreProperties) {
+  default T pathProperties(T t, String... ignoreProperties) {
     BeanUtils.copyProperties(this, t, ignoreProperties);
 
+    return this.convertProperties(t);
+  }
+
+  /**
+   * 转换属性值
+   * @param t entity 对象
+   * @return entity 对象
+   */
+  default T convertProperties(T t) {
     return t;
   }
 }

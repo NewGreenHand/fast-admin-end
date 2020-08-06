@@ -1,12 +1,13 @@
 package com.admin.user.entity;
 
 import com.admin.core.basic.AbstractEntity;
-import com.admin.user.enums.LayoutsContainerEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -18,26 +19,30 @@ import java.util.Set;
 @Entity
 @Table(name = "sys_menu", schema = "fastAdmin")
 public class SysMenuEntity extends AbstractEntity {
+  /** 菜单名称(路由名称). */
+  private String name;
   /** 菜单名称. */
-  private String menuName;
+  private String title;
+  /** 图标 */
+  private String icon;
   /** uri 路径. */
-  private String uriPath;
-  /** 文件所在路径. */
+  private String path;
+  /** 组件名. */
   private String component;
-  /** 菜单图标. */
-  private String iconCls;
   /** 是否需要缓存. */
   private Boolean keepAlive;
-  /** 请求是否需要授权. */
-  private Boolean requireAuth;
+  /** 用于隐藏不需要在菜单中展示的子路由。用法可以查看 个人设置 的配置。 */
+  private Boolean hideChildrenInMenu;
+  /** 可以在菜单中不展示这个路由，包括子路由。效果可以查看 other 下的路由配置。 */
+  private Boolean hidden;
+  /** 可以强制当前页面不显示 PageHeader 组件中的页面带的 面包屑和页面标题栏 */
+  private Boolean hiddenHeaderContent;
+  /** 菜单重定向（目录菜单可用） */
+  private String redirect;
   /** 上级菜单ID. */
   private Long parentId;
   /** 是否启用. */
   private Boolean enabled;
-  /** 布局容器. */
-  private String container;
-  /** 是否需要隐藏导航(即面包屑组件). */
-  private Boolean hideHeader;
   /** 上级菜单 id 链. */
   private List<Integer> parentIdChain;
   /** 子菜单集合. */
@@ -46,23 +51,33 @@ public class SysMenuEntity extends AbstractEntity {
   private Set<SysInterfaceEntity> permissions;
 
   @Basic
-  @Column(name = "menu_name")
-  public String getMenuName() {
-    return menuName;
+  @Column(name = "name")
+  public String getName() {
+    return name;
   }
 
-  public void setMenuName(String menuName) {
-    this.menuName = menuName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Basic
-  @Column(name = "uri_path")
-  public String getUriPath() {
-    return uriPath;
+  @Column(name = "title")
+  public String getTitle() {
+    return title;
   }
 
-  public void setUriPath(String uriPath) {
-    this.uriPath = uriPath;
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  @Basic
+  @Column(name = "path")
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
   }
 
   @Basic
@@ -76,13 +91,13 @@ public class SysMenuEntity extends AbstractEntity {
   }
 
   @Basic
-  @Column(name = "icon_cls")
-  public String getIconCls() {
-    return iconCls;
+  @Column(name = "icon")
+  public String getIcon() {
+    return icon;
   }
 
-  public void setIconCls(String iconCls) {
-    this.iconCls = iconCls;
+  public void setIcon(String icon) {
+    this.icon = icon;
   }
 
   @Basic
@@ -96,13 +111,43 @@ public class SysMenuEntity extends AbstractEntity {
   }
 
   @Basic
-  @Column(name = "require_auth")
-  public Boolean getRequireAuth() {
-    return requireAuth;
+  @Column(name = "hide_children_in_menu")
+  public Boolean getHideChildrenInMenu() {
+    return hideChildrenInMenu;
   }
 
-  public void setRequireAuth(Boolean requireAuth) {
-    this.requireAuth = requireAuth;
+  public void setHideChildrenInMenu(Boolean hideChildrenInMenu) {
+    this.hideChildrenInMenu = hideChildrenInMenu;
+  }
+
+  @Basic
+  @Column(name = "hidden")
+  public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  @Basic
+  @Column(name = "hidden_header_content")
+  public Boolean getHiddenHeaderContent() {
+    return hiddenHeaderContent;
+  }
+
+  public void setHiddenHeaderContent(Boolean hiddenHeaderContent) {
+    this.hiddenHeaderContent = hiddenHeaderContent;
+  }
+
+  @Basic
+  @Column(name = "redirect")
+  public String getRedirect() {
+    return redirect;
+  }
+
+  public void setRedirect(String redirect) {
+    this.redirect = redirect;
   }
 
   @Basic
@@ -126,27 +171,6 @@ public class SysMenuEntity extends AbstractEntity {
   }
 
   @Basic
-  @Column(name = "hide_header")
-  public Boolean getHideHeader() {
-    return hideHeader;
-  }
-
-  public void setHideHeader(Boolean hideHeader) {
-    this.hideHeader = hideHeader;
-  }
-
-  @Basic
-//  @Enumerated(EnumType.STRING)
-  @Column(name = "container", length = 30)
-  public String getContainer() {
-    return container;
-  }
-
-  public void setContainer(String container) {
-    this.container = container;
-  }
-
-  @Basic
   @Type(
       type = "com.admin.core.repository.HibernateListConvert",
       parameters = {
@@ -161,6 +185,7 @@ public class SysMenuEntity extends AbstractEntity {
     this.parentIdChain = parentIdChain;
   }
 
+  @Where(clause = "enabled = 1")
   @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "menu_id", updatable = false, insertable = false)
   public Set<SysInterfaceEntity> getPermissions() {
@@ -183,18 +208,27 @@ public class SysMenuEntity extends AbstractEntity {
   }
 
   @Override
-  public String toString() {
-    return "SysMenu{" +
-      "menuName='" + menuName + '\'' +
-      ", uriPath='" + uriPath + '\'' +
-      ", component='" + component + '\'' +
-      ", iconCls='" + iconCls + '\'' +
-      ", keepAlive=" + keepAlive +
-      ", requireAuth=" + requireAuth +
-      ", parentId=" + parentId +
-      ", enabled=" + enabled +
-      ", container=" + container +
-      ", hideHeader=" + hideHeader +
-      '}';
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    SysMenuEntity that = (SysMenuEntity) o;
+    return Objects.equals(name, that.name) &&
+      Objects.equals(title, that.title) &&
+      Objects.equals(icon, that.icon) &&
+      Objects.equals(path, that.path) &&
+      Objects.equals(component, that.component) &&
+      Objects.equals(keepAlive, that.keepAlive) &&
+      Objects.equals(hideChildrenInMenu, that.hideChildrenInMenu) &&
+      Objects.equals(hidden, that.hidden) &&
+      Objects.equals(hiddenHeaderContent, that.hiddenHeaderContent) &&
+      Objects.equals(redirect, that.redirect) &&
+      Objects.equals(parentId, that.parentId) &&
+      Objects.equals(enabled, that.enabled);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), name, title, icon, path, component, keepAlive, hideChildrenInMenu, hidden, hiddenHeaderContent, redirect, parentId, enabled);
   }
 }
