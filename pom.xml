@@ -137,16 +137,17 @@
       <properties>
         <profiles.active>prod</profiles.active>
       </properties>
-      <!-- 默认环境 -->
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
+
     </profile>
     <profile>
       <id>docker-prod</id>
       <properties>
         <profiles.active>docker</profiles.active>
       </properties>
+      <!-- 默认环境 -->
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
     </profile>
   </profiles>
 </project>

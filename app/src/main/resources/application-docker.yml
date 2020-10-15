@@ -2,7 +2,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://47.107.123.97:3306/fastAdmin?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
+    url: jdbc:mysql://mysql_1:3306/fastAdmin?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
     username: root
     password: mysql_root
     druid:
@@ -29,7 +29,7 @@ spring:
           auto: update
   #配置redis数据库连接
   redis:
-    host: 192.168.1.10
+    host: redis_1
     port: 6379
     jedis:
       pool:
